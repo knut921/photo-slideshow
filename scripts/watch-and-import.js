@@ -88,6 +88,19 @@ console.log(`監看資料夾: ${watchDir}`);
 console.log(`檔名比對規則: /${pattern.source}/i`);
 console.log(`每次偵測到新的、下載完成的 zip 就會自動匯入 + 刪除。按 Ctrl+C 停止。\n`);
 
+// A single tick() already processes its candidates one at a time (the for-loop
+// awaits each runImport), but setInterval doesn't wait for a slow tick() to
+// finish before firing the next one — importing hundreds of photos takes way
+// longer than POLL_MS. Without this guard, overlapping ticks each spawn their
+// own import process, and multiple processes racing to write into the same
+// public/photos/ directory silently overwrite each other's output.
+let busy = false;
 setInterval(() => {
-  tick().catch((e) => console.error(e));
+  if (busy) return;
+  busy = true;
+  tick()
+    .catch((e) => console.error(e))
+    .finally(() => {
+      busy = false;
+    });
 }, POLL_MS);
