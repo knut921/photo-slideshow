@@ -116,20 +116,14 @@
     state.trackPos = -1;
   }
 
-  function targetSize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const w = Math.min(Math.round(window.innerWidth * dpr), 2600);
-    const h = Math.min(Math.round(window.innerHeight * dpr), 2600);
-    return { w, h };
-  }
-
+  // Photos are pre-resized at import time (scripts/import-takeout-photos.js),
+  // so both layers just use the file as-is — no per-device size suffix needed.
   function fgUrl(base) {
-    const { w, h } = targetSize();
-    return `${base}=w${w}-h${h}`;
+    return base;
   }
 
   function bgUrl(base) {
-    return `${base}=w800-h800-c`;
+    return base;
   }
 
   function preload(base) {
