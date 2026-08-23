@@ -13,7 +13,10 @@ const AUDIO_EXTENSIONS = new Set([".mp3", ".m4a", ".aac", ".ogg", ".wav"]);
 // browser, so a plain server-side fetch never reaches the actual album HTML.
 const DEFAULT_ALBUM_URL =
   "https://photos.google.com/share/AF1QipMkD-oHYIOJ2KENHmLeCVBHtdLp-oq0L8PdVhWwgsk4gh-402hfJS1JH4BjwXKpUQ?key=NHlZM3E4VXJKaDlRVGZ4VEpJaXAwVWhPeV9sMy1n";
-const ALBUM_URL = process.env.ALBUM_URL || DEFAULT_ALBUM_URL;
+const ALBUM_URLS = (process.env.ALBUM_URL || DEFAULT_ALBUM_URL)
+  .split(",")
+  .map((url) => url.trim())
+  .filter(Boolean);
 
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 let photoCache = { data: null, fetchedAt: 0 };
@@ -64,7 +67,37 @@ app.get("/api/photos", async (req, res) => {
   try {
     const now = Date.now();
     if (!photoCache.data || now - photoCache.fetchedAt > CACHE_TTL_MS) {
-      photoCache = { data: await fetchAlbumPhotos(ALBUM_URL), fetchedAt: now };
+      const allPhotos = new Set();
+      let mergedTitle = "";
+
+      const results = await Promise.all(
+        ALBUM_URLS.map(async (url) => {
+          try {
+            return await fetchAlbumPhotos(url);
+          } catch (e) {
+            console.error(`Failed to fetch album (${url}):`, e.message);
+            return null;
+          }
+        })
+      );
+
+      for (const result of results) {
+        if (result) {
+          if (!mergedTitle) mergedTitle = result.title;
+          for (const p of result.photos) {
+            allPhotos.add(p);
+          }
+        }
+      }
+
+      if (allPhotos.size === 0) {
+        throw new Error("No photos found in any of the configured albums.");
+      }
+
+      photoCache = {
+        data: { title: mergedTitle || "Photo Album", photos: Array.from(allPhotos) },
+        fetchedAt: now,
+      };
     }
     res.json(photoCache.data);
   } catch (err) {
