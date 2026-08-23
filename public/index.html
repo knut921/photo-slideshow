@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>相簿投影播放</title>
+
+<!-- iPad: "加入主畫面" 後以無 Safari 介面的全螢幕模式開啟 -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="apple-mobile-web-app-title" content="相簿投影" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#000000" />
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="stage">
+  <div class="layer active" id="layerA">
+    <img class="bg" alt="" />
+    <img class="fg" alt="" />
+  </div>
+  <div class="layer" id="layerB">
+    <img class="bg" alt="" />
+    <img class="fg" alt="" />
+  </div>
+</div>
+
+<div id="startOverlay">
+  <div id="startBox">
+    <div id="startTitle">相簿投影播放</div>
+    <div id="startSubtitle" data-state="loading">正在載入相簿…</div>
+    <button id="startBtn" disabled>輕觸開始播放</button>
+    <div id="startHint">開始後會自動播放照片與背景音樂</div>
+  </div>
+</div>
+
+<div id="controls">
+  <button id="prevBtn" class="ctrl-btn" aria-label="上一張">⟨</button>
+  <button id="playPauseBtn" class="ctrl-btn" aria-label="播放/暫停">⏸</button>
+  <button id="nextBtn" class="ctrl-btn" aria-label="下一張">⟩</button>
+
+  <div id="trackInfo"></div>
+
+  <div id="volumeWrap">
+    <span>🔊</span>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" />
+  </div>
+
+  <button id="settingsBtn" class="ctrl-btn" aria-label="設定">⚙</button>
+</div>
+
+<div id="settingsPanel">
+  <div class="settings-row">
+    <label for="intervalSlider">每張停留秒數</label>
+    <input type="range" id="intervalSlider" min="3" max="30" step="1" />
+    <span id="intervalValue"></span>
+  </div>
+  <div class="settings-row">
+    <label for="shuffleToggle">隨機播放照片</label>
+    <input type="checkbox" id="shuffleToggle" />
+  </div>
+  <button id="settingsCloseBtn">關閉</button>
+</div>
+
+<div id="counter"></div>
+
+<audio id="audioPlayer" preload="auto"></audio>
+
+<script src="app.js"></script>
+</body>
+</html>

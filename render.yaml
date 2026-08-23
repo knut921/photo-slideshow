@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: photo-slideshow
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: ALBUM_URL
+        value: https://photos.google.com/share/AF1QipMkD-oHYIOJ2KENHmLeCVBHtdLp-oq0L8PdVhWwgsk4gh-402hfJS1JH4BjwXKpUQ?key=NHlZM3E4VXJKaDlRVGZ4VEpJaXAwVWhPeV9sMy1n

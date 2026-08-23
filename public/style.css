@@ -1,0 +1,194 @@
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Helvetica Neue", Arial, sans-serif;
+  color: #f2f2f2;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  background: #000;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+  z-index: 0;
+}
+.layer.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.layer .bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(60px) brightness(0.5) saturate(1.15);
+  transform: scale(1.2);
+}
+
+.layer .fg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 2;
+  transform-origin: 50% 50%;
+}
+
+.layer .fg.kenburns-in {
+  animation-name: kb-in;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+.layer .fg.kenburns-out {
+  animation-name: kb-out;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes kb-in {
+  from { transform: scale(1); }
+  to   { transform: scale(1.08); }
+}
+@keyframes kb-out {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1); }
+}
+
+/* ---------- start overlay ---------- */
+#startOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+#startBox { max-width: 420px; }
+#startTitle { font-size: 28px; font-weight: 600; margin-bottom: 12px; }
+#startSubtitle { font-size: 15px; opacity: 0.75; margin-bottom: 24px; }
+#startBtn {
+  font-size: 18px;
+  padding: 14px 32px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+}
+#startBtn:disabled { opacity: 0.4; cursor: default; }
+#startHint { font-size: 12px; opacity: 0.5; margin-top: 18px; }
+#startOverlay.hidden { display: none; }
+
+/* ---------- controls ---------- */
+#controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0));
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+#controls.hidden {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+.ctrl-btn {
+  background: rgba(255,255,255,0.12);
+  border: none;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+#trackInfo {
+  flex: 1 1 auto;
+  font-size: 13px;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#volumeWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+#volumeSlider { width: 90px; }
+
+/* ---------- settings panel ---------- */
+#settingsPanel {
+  position: fixed;
+  right: 20px;
+  bottom: 84px;
+  z-index: 45;
+  background: rgba(20,20,20,0.92);
+  border-radius: 14px;
+  padding: 18px 20px;
+  width: 260px;
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+#settingsPanel.open { display: flex; }
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+}
+.settings-row input[type="range"] { flex: 1; }
+#settingsCloseBtn {
+  align-self: flex-end;
+  background: rgba(255,255,255,0.12);
+  border: none;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ---------- counter ---------- */
+#counter {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top));
+  right: 18px;
+  z-index: 40;
+  font-size: 12px;
+  opacity: 0.55;
+  transition: opacity 0.4s ease;
+}
+#counter.hidden { opacity: 0; }

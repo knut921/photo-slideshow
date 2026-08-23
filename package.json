@@ -1,0 +1,17 @@
+{
+  "name": "photo-slideshow",
+  "version": "1.0.0",
+  "description": "Google Photos shared-album slideshow with background music, for iPad kiosk display",
+  "private": true,
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
