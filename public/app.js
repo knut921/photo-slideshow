@@ -1,6 +1,7 @@
 (() => {
   "use strict";
 
+  const stageEl = document.getElementById("stage");
   const layerEls = [document.getElementById("layerA"), document.getElementById("layerB")];
   const startOverlay = document.getElementById("startOverlay");
   const startSubtitle = document.getElementById("startSubtitle");
@@ -222,6 +223,25 @@
   playPauseBtn.addEventListener("click", () => setPaused(!state.paused));
   prevBtn.addEventListener("click", () => showSlide(-1));
   nextBtn.addEventListener("click", () => showSlide(1));
+
+  // Tap zones on the photo itself: right half = next, left half = previous,
+  // double-tap (either half) = toggle pause. A single tap is only acted on
+  // after a short wait, so a following second tap can still be caught as a
+  // double-tap instead.
+  let tapTimer = null;
+  stageEl.addEventListener("click", (e) => {
+    if (!state.started) return;
+    if (tapTimer) {
+      clearTimeout(tapTimer);
+      tapTimer = null;
+      setPaused(!state.paused);
+      return;
+    }
+    tapTimer = setTimeout(() => {
+      tapTimer = null;
+      showSlide(e.clientX < window.innerWidth / 2 ? -1 : 1);
+    }, 280);
+  });
 
   volumeSlider.addEventListener("input", () => {
     audio.volume = parseFloat(volumeSlider.value);
